@@ -5,3 +5,9 @@ amd64:
 i386:
   sets:
     - base.txz
+arm64:
+  sets:
+    - base.txz
+armv7:
+  sets:
+    - base.txz
