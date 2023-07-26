@@ -59,7 +59,7 @@ jail_enable:
 
 {{ jail }}_set_{{ set }}:
   cmd.run:
-    - name: fetch {{ cfg.get('fetch_url', 'https://download.freebsd.org/ftp/releases/' ~ cfg.arch).rstrip('/') ~ '/' ~ cfg.version ~ '/' ~ set }} -4 -q -o - | tar -x -C {{ cfg.root }} -f -
+    - name: fetch {{ cfg.get('fetch_url', 'https://download.freebsd.org/ftp/releases/') ~ cfg.arch ~ '/' ~ cfg.version ~ '/' ~ set }} -4 -q -o - | tar -x -C {{ cfg.root }} -f -
     - cwd: /tmp
     - onchanges:
       - file: {{ jail }}_directory
@@ -84,6 +84,11 @@ jail_enable:
     - user: root
     - group: wheel
     - mode: 644
+
+{{ jail }}_rc_conf_hostname:
+  sysrc.absent:
+    - name: hostname
+    - file: {{ cfg.root | path_join('etc', 'rc.conf') }}
 
 {% for rc_param, rc_value in cfg.rc_conf.items() %}
 
