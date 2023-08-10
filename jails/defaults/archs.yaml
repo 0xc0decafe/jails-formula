@@ -8,6 +8,6 @@ i386:
 arm64:
   sets:
     - base.txz
-armv7:
+arm:
   sets:
     - base.txz
