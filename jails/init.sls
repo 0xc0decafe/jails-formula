@@ -85,10 +85,11 @@ jail_enable:
     - group: wheel
     - mode: 644
 
-{{ jail }}_rc_conf_hostname:
-  sysrc.absent:
-    - name: hostname
-    - file: {{ cfg.root | path_join('etc', 'rc.conf') }}
+#Doesn't work
+#{{ jail }}_rc_conf_hostname:
+#  sysrc.absent:
+#    - name: hostname
+#    - file: {{ cfg.root | path_join('etc', 'rc.conf') }}
 
 {% for rc_param, rc_value in cfg.rc_conf.items() %}
 
