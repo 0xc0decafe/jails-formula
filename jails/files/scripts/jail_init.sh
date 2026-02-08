@@ -1,14 +1,14 @@
 #!/bin/sh
 
-jexec "${JAIL_NAME}" pkg install pkg
+jexec "${JAIL_NAME}" pkg bootstrap
 
-[ -z "${PKG_SALT}" ] && PKG_SALT="$(jexec ${JAIL_NAME} pkg search -q -x '^py.*-salt'|sort -ur|head -1)"
+[ -z "${PKG_SALT}" ] && PKG_SALT="$(jexec ${JAIL_NAME} pkg search -q -x '^py.*-salt' | sort -u -t '-' -k3.1n,3.4n -k 1.3n,1.5n | tail -1)"
 
 jexec "${JAIL_NAME}" << EOF
 pkg install ${PKG_SALT}
-pkg install ca_root_nss
 pkg lock -y ${PKG_SALT}
 cp /usr/local/etc/salt/minion.sample /usr/local/etc/salt/minion
+mkdir /var/log/salt
 mkdir -p /usr/local/etc/salt/minion.d
 sed -i '' "s/^#default_include:.*/default_include: minion.d\/\*.conf/" /usr/local/etc/salt/minion
 EOF
@@ -23,4 +23,7 @@ log_level_logfile: info
 hash_type: sha256
 EOF
 
-service -j "${JAIL_NAME}" salt_minion start
+jexec "${JAIL_NAME}" << EOF
+service salt_minion start
+pkg audit -F || exit 0
+EOF

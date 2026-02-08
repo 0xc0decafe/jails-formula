@@ -1,3 +1,16 @@
+10.3-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
+  rc_conf:
+    rpcbind_enable: "NO"
+    syslogd_flags: "-ss"
+    sendmail_enable: "NO"
+    sendmail_submit_enable: "NO"
+    sendmail_outbound_enable: "NO"
+    sendmail_msp_queue_enable: "NO"
+    sshd_enable: "YES"
+    salt_minion_enable: "YES"
+    cron_flags: "$cron_flags -J 15"
+
 10.4-RELEASE:
   fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
@@ -69,6 +82,7 @@
     cron_flags: "$cron_flags -J 15"
 
 12.3-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"
@@ -77,6 +91,7 @@
     cron_flags: "$cron_flags -J 15"
 
 12.4-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"
@@ -85,6 +100,7 @@
     cron_flags: "$cron_flags -J 15"
 
 13.0-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"
@@ -93,6 +109,7 @@
     cron_flags: "$cron_flags -J 15"
 
 13.1-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"
@@ -101,6 +118,7 @@
     cron_flags: "$cron_flags -J 15"
 
 13.2-RELEASE:
+  fetch_url: http://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"
@@ -157,6 +175,14 @@
     cron_flags: "$cron_flags -J 15"
 
 14.3-RELEASE:
+  rc_conf:
+    rpcbind_enable: "NO"
+    syslogd_flags: "-ss"
+    sendmail_enable: "NONE"
+    sshd_enable: "YES"
+    cron_flags: "$cron_flags -J 15"
+
+15.0-RELEASE:
   rc_conf:
     rpcbind_enable: "NO"
     syslogd_flags: "-ss"

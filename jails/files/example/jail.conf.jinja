@@ -1,4 +1,4 @@
-{% set jails = salt.pillar.get('jails') %}
+{% set jails = salt['pillar.get']('jails') %}
 
 exec.prestart += "cp /etc/resolv.conf $path/etc";
 exec.prestart += "cp /etc/localtime $path/etc";
@@ -19,6 +19,6 @@ host.hostname = "$name.xxx";
 
 {% for jail, cfg in jails.instances.items() if cfg.present %}
 {{ jail }} {
-{{ cfg.jail_conf }}
+{{ cfg.jail_conf|indent }}
 }
 {% endfor %}

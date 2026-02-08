@@ -26,6 +26,11 @@ jail_enable:
     - name: jail_enable
     - value: "YES"
 
+jail_list:
+  sysrc.managed:
+    - name: jail_list
+    - value: "{{ jails.sysrc_jail_list }}"
+
 {% for jail, cfg in jails.instances.items() %}
 
 {% if cfg.present %}
@@ -84,6 +89,19 @@ jail_enable:
     - user: root
     - group: wheel
     - mode: 644
+    - require:
+      - file: {{ jail }}_directory
+
+{{ jail }}_dev:
+  file.directory:
+    - name: {{ cfg.root | path_join('dev') }}
+    - user: root
+    - group: wheel
+    - mode: 555
+    - require_in:
+      - cmd: {{ jail }}_start
+    - require:
+      - file: {{ jail }}_directory
 
 #Doesn't work
 #{{ jail }}_rc_conf_hostname:
@@ -311,37 +329,15 @@ jail_enable:
 # START JAIL #
 ##############
 
-{% if cfg.boot_start %}
-
-# Start on boot, add to rc.conf jail_list
-
-{{ jail }}_jail_list:
-  cmd.run:
-    - name: sysrc jail_list+={{ jail }}
-    - cwd: /tmp
-    - unless:
-      - sysrc -n jail_list|egrep -q '(^|[[:space:]]){{ jail }}($|[[:space:]])'
-
-{% else %}
-
-# Do not start on boot, remove from rc.conf jail_list
-
-{{ jail }}_jail_list:
-  cmd.run:
-    - name: sysrc jail_list-={{ jail }}
-    - cwd: /tmp
-    - onlyif:
-      - sysrc -n jail_list|egrep -q '(^|[[:space:]]){{ jail }}($|[[:space:]])'
-
-{% endif %}
-
 {{ jail }}_start:
   cmd.run:
     - name: service jail onestart {{ jail }}
     - cwd: /tmp
     - require:
       - file: jail_etc_jail_conf
-      - cmd: {{ jail }}_jail_list
+      - sysrc: jail_list
+    - require_in:
+      - cmd: {{ jail }}_freebsd_update_fetch_install
     - onchanges:
       - file: {{ jail }}_directory
       - cmd: {{ jail }}_fstab_stop
@@ -350,7 +346,7 @@ jail_enable:
 # JAIL INIT SCRIPTS #
 #####################
 
-{% for init_script in cfg.init_scripts %}
+{% for init_script in cfg.get('init_scripts', ()) %}
 
 {{ jail }}_{{ init_script }}:
   cmd.script:
@@ -387,6 +383,7 @@ jail_enable:
     - cwd: /tmp
     - require_in:
       - file: jail_etc_jail_conf
+      - sysrc: jail_list
       - cmd: {{ jail }}_jail_list
     - onlyif:
       - fun: jail.status
